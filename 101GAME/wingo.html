@@ -296,31 +296,31 @@
 
     // Function to update period and timer
     function updateTimer() {
-        const now = new Date();
+    const now = new Date();
+    
+    // Get current date components
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    
+    // Calculate minutes since start of the day (UTC time can be used if needed)
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const totalMinutes = (hours * 60) + minutes + 1; // Adding 1 as per your logic
+    
+    // Generate period number
+    const period = `${year}${month}${day}10${totalMinutes}`;
+    document.getElementById('period1m').textContent = `Period: ${period}`;
+    
+    // Calculate remaining seconds in the minute
+    const remainingSeconds = 60 - now.getSeconds();
+    const formattedTime = `00 : ${remainingSeconds.toString().padStart(2, '0')}`;
+    document.getElementById('timer1m').textContent = `Remaining Time: ${formattedTime}`;
+}
 
-        // Convert to UTC
-        const utcHours = now.getUTCHours();
-        const utcMinutes = now.getUTCMinutes();
-        const utcSeconds = now.getUTCSeconds();
-
-        const remainingSeconds = 60 - utcSeconds;
-        const totalMinutes = utcHours * 60 + utcMinutes;
-
-        // Update period number
-        const periodElement = document.getElementById('period1m');
-        const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
-        const period = `${dateStr}1000${10001 + totalMinutes}`;
-        periodElement.textContent = `Period: ${period}`;
-
-        // Update timer in format "00 : xx"
-        const timerElement = document.getElementById('timer1m');
-        const formattedTime = `00 : ${remainingSeconds.toString().padStart(2, '0')}`;
-        timerElement.textContent = `Remaining Time: ${formattedTime}`;
-    }
-
-    // Start the timer and result functions
-    setInterval(updateTimer, 1000);
-    updateTimer(); // Run immediately on load
+// Start the timer and result functions
+setInterval(updateTimer, 1000);
+updateTimer(); // Run immediately on load
 
     // Display result periodically
     setInterval(pickRandomResult, 1000);
