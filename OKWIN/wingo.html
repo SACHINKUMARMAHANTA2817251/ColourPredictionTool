@@ -250,55 +250,25 @@
         document.getElementById('main-content').classList.add('blurred');
     };
 
-    // Close pop-up function
     function closePopup() {
         document.getElementById('popup').style.display = 'none';
         document.getElementById('main-content').classList.remove('blurred');
     }
 
-    // Open register link and close the popup
     function openRegisterLink() {
         window.open('https://okwinslots1.com/#/register?invitationCode=288351655891', '_blank');
         closePopup();
     }
 
-    // Generate random online users count
-    function generateOnlineUsers() {
-        const min = 9000;
-        const max = 15000;
-        const randomUsers = Math.floor(Math.random() * (max - min + 1)) + min;
-        document.getElementById('online-users').textContent = `Online Users: ${randomUsers}`;
-    }
-
-    // Generate random user winning amount
-    function generateUserWinning() {
-        const min = 9000;
-        const max = 50000;
-        const randomAmount = Math.floor(Math.random() * (max - min + 1)) + min;
-        const randomUser = `789${Math.floor(1000 + Math.random() * 9000)}990`; // Create random user number
-
-        document.getElementById('user-winning').textContent = `User ${randomUser.slice(0, 3)}****${randomUser.slice(-3)} Win ₹${randomAmount}`;
-    }
-
-    // Random results
     const results = [
-        "0 (Small)", "1 (Small)", "2 (Small)", "3 (Small)", "4 (Small", 
+        "0 (Small)", "1 (Small)", "2 (Small)", "3 (Small)", "4 (Small)", 
         "5 (Big)", "6 (Big)", "7 (Big)", "8 (Big)", "9 (Big)"
     ];
 
-    // Function to select a random result
-    function pickRandomResult() {
-        const currentMinute = new Date().getMinutes();
-        const randomIndex = currentMinute % 10;
-        const selectedResult = results[randomIndex];
-        document.getElementById('result').textContent = `Result: ${selectedResult}`;
-    }
+    let currentResult = results[Math.floor(Math.random() * results.length)];
 
-    // Function to update period and timer
     function updateTimer() {
         const now = new Date();
-
-        // Convert to UTC
         const utcHours = now.getUTCHours();
         const utcMinutes = now.getUTCMinutes();
         const utcSeconds = now.getUTCSeconds();
@@ -306,26 +276,25 @@
         const remainingSeconds = 60 - utcSeconds;
         const totalMinutes = utcHours * 60 + utcMinutes;
 
-        // Update period number
         const periodElement = document.getElementById('period1m');
         const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
         const period = `${dateStr}1000${10001 + totalMinutes}`;
         periodElement.textContent = `Period: ${period}`;
 
-        // Update timer in format "00 : xx"
         const timerElement = document.getElementById('timer1m');
-        const formattedTime = `00 : ${remainingSeconds.toString().padStart(2, '0')}`;
-        timerElement.textContent = `Remaining Time: ${formattedTime}`;
+        timerElement.textContent = `Remaining Time: 00 : ${remainingSeconds.toString().padStart(2, '0')}`;
+
+        if (utcSeconds === 0) {
+            currentResult = results[Math.floor(Math.random() * results.length)];
+        }
     }
 
-    // Start the timer and result functions
+    function updateResult() {
+        document.getElementById('result').textContent = `Result: ${currentResult}`;
+    }
+
     setInterval(updateTimer, 1000);
-    updateTimer(); // Run immediately on load
-
-    // Display result periodically
-    setInterval(pickRandomResult, 1000);
-
-    // Update online users and winning user every 1500ms
+    setInterval(updateResult, 1000);
     setInterval(() => {
         generateOnlineUsers();
         generateUserWinning();

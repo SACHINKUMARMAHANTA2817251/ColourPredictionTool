@@ -262,68 +262,49 @@
         closePopup();
     }
 
-    // Generate random online users count
-    function generateOnlineUsers() {
-        const min = 9000;
-        const max = 15000;
-        const randomUsers = Math.floor(Math.random() * (max - min + 1)) + min;
-        document.getElementById('online-users').textContent = `Online Users: ${randomUsers}`;
-    }
-
-    // Generate random user winning amount
-    function generateUserWinning() {
-        const min = 9000;
-        const max = 50000;
-        const randomAmount = Math.floor(Math.random() * (max - min + 1)) + min;
-        const randomUser = `789${Math.floor(1000 + Math.random() * 9000)}990`; // Create random user number
-
-        document.getElementById('user-winning').textContent = `User ${randomUser.slice(0, 3)}****${randomUser.slice(-3)} Win ₹${randomAmount}`;
-    }
-
     // Random results
     const results = [
         "0 (Small)", "1 (Small)", "2 (Small)", "3 (Small)", "4 (Small)", 
-        "5 (Big)", "6 (Big) Red", "7 (Big) Green", "8 (Big)", "9 (Big)"
+        "5 (Big)", "6 (Big)", "7 (Big)", "8 (Big)", "9 (Big)"
     ];
 
-    // Function to select a random result
+    // Function to select a purely random result
     function pickRandomResult() {
-        const currentMinute = new Date().getMinutes();
-        const randomIndex = currentMinute % 10;
-        const selectedResult = results[randomIndex];
-        document.getElementById('result').textContent = `Result: ${selectedResult}`;
+        const randomIndex = Math.floor(Math.random() * results.length);
+        return results[randomIndex];
     }
 
-    // Function to update period and timer
-    function updateTimer() {
-    const now = new Date();
-    
-    // Get current date components
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    
-    // Calculate minutes since start of the day (UTC time can be used if needed)
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const totalMinutes = (hours * 60) + minutes + 1; // Adding 1 as per your logic
-    
-    // Generate period number
-    const period = `${year}${month}${day}10${totalMinutes}`;
-    document.getElementById('period1m').textContent = `Period: ${period}`;
-    
-    // Calculate remaining seconds in the minute
-    const remainingSeconds = 60 - now.getSeconds();
-    const formattedTime = `00 : ${remainingSeconds.toString().padStart(2, '0')}`;
-    document.getElementById('timer1m').textContent = `Remaining Time: ${formattedTime}`;
-}
+    let lastPeriod = ""; // Store last period to detect change
 
-// Start the timer and result functions
-setInterval(updateTimer, 1000);
-updateTimer(); // Run immediately on load
+    // Function to update period, timer, and result
+    function updateGame() {
+        const now = new Date();
 
-    // Display result periodically
-    setInterval(pickRandomResult, 1000);
+        // Calculate period number
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const date = String(now.getDate()).padStart(2, '0');
+
+        const totalMinutes = now.getHours() * 60 + now.getMinutes();
+        const period = `${year}${month}${date}10${totalMinutes + 1}`;
+
+        document.getElementById('period1m').textContent = `Period: ${period}`;
+
+        // Update timer
+        const remainingSeconds = 60 - now.getSeconds();
+        document.getElementById('timer1m').textContent = `Remaining Time: 00 : ${remainingSeconds.toString().padStart(2, '0')}`;
+
+        // ** Check if period changed, then update result **
+        if (period !== lastPeriod) {
+            lastPeriod = period; // Update stored period
+            const newResult = pickRandomResult();
+            document.getElementById('result').textContent = `Result: ${newResult}`;
+        }
+    }
+
+    // Start the timer, result, and period functions
+    setInterval(updateGame, 1000);
+    updateGame(); // Run immediately on load
 
     // Update online users and winning user every 1500ms
     setInterval(() => {
@@ -331,6 +312,9 @@ updateTimer(); // Run immediately on load
         generateUserWinning();
     }, 1500);
 </script>
+
+
+
 
 </body>
 </html>
